@@ -48,6 +48,7 @@ struct StructCustomer
 int *displayMenu();
 int *selectCustomerNumber();
 StructCustomer *getCustomerInfo();
+void displayAllCustomerInfo(StructCustomer *);
 bool *validateState(string *);
 bool *validateZipcode(string *);
 bool *validatePhoneNumber(string *);
@@ -71,12 +72,16 @@ int main()
         {
             intCustomerNumber = selectCustomerNumber();
             cout << "\nPlease enter information for customer # " << *intCustomerNumber << ":\n";
-            scCustomers[*intCustomerNumber] = *getCustomerInfo();
+            scCustomers[*intCustomerNumber - 1] = *getCustomerInfo();
         }
         else if(*intMenuSelection == 2)
         {
             intCustomerNumber = selectCustomerNumber();
-            displayCustomerInfo(&scCustomers[*intCustomerNumber], intCustomerNumber);
+            displayCustomerInfo(&scCustomers[*intCustomerNumber - 1], intCustomerNumber);
+        }
+        else if(*intMenuSelection == 3)
+        {
+            displayAllCustomerInfo(scCustomers);
         }
     }
     
@@ -141,18 +146,18 @@ StructCustomer *getCustomerInfo()
     getline(cin, scCustomer->strName);
 
     cout << "Please enter the customer's street address: ";
-    cin.clear();
-    cin.ignore();
+//    cin.clear();
+//    cin.ignore();
     getline(cin, scCustomer->strAddress);
 
     cout << "Please enter the customer's city: ";
-    cin.clear();
-    cin.ignore();
+//    cin.clear();
+//    cin.ignore();
     getline(cin, scCustomer->strCity);
     
     cout << "Please enter the customer's state: ";
-    cin.clear();
-    cin.ignore();
+//    cin.clear();
+//    cin.ignore();
     getline(cin, scCustomer->strState);
     while(scCustomer->strState.length() != 2 || *validateState(&scCustomer->strState) == false)
     {
@@ -163,8 +168,8 @@ StructCustomer *getCustomerInfo()
     }
     
     cout << "Please enter the customer's zip code: ";
-    cin.clear();
-    cin.ignore();
+//    cin.clear();
+//    cin.ignore();
     getline(cin, scCustomer->strZipcode);
     while(scCustomer->strZipcode.length() != 5 || *validateZipcode(&scCustomer->strZipcode) == false)
     {
@@ -175,8 +180,8 @@ StructCustomer *getCustomerInfo()
     }
     
     cout << "Please enter the customer's phone number: ";
-    cin.clear();
-    cin.ignore();
+//    cin.clear();
+//    cin.ignore();
     getline(cin, scCustomer->strTelephoneNumber);
     while(scCustomer->strTelephoneNumber.length() != 12 || *validatePhoneNumber(&scCustomer->strTelephoneNumber) == false)
     {
@@ -305,8 +310,6 @@ bool *validateState(string *strState)
     char *chrArr = nullptr;
     chrArr = new char[2];
     
-    cout << *strState << endl;
-    
     strcpy(chrArr, strState->c_str());
     
     for (int i = 0 ; i < 2 ; i++)
@@ -325,8 +328,6 @@ bool *validateState(string *strState)
             break;
         }
     }
-    
-    cout << *isValid << endl;
     
     return isValid;
 }
@@ -404,12 +405,21 @@ void displayCustomerInfo(StructCustomer *scCustomer, int *intNumber)
 {
     cout << fixed << showpoint << setprecision(2);
     
-    cout << "\nInformation for customer #" << *intNumber << ":\n\n";
+    cout << "\nInformation for customer #" << (*intNumber + 1) << ":\n\n";
     cout << "\tName: " << scCustomer->strName << endl;
     cout << "\tAddress: " << scCustomer->strAddress << endl;
-    cout << "\t\t\t" << scCustomer->strCity << ", " << scCustomer->strState << scCustomer->strZipcode << endl;
-    cout << "\tTelephone Number: (" << scCustomer->strTelephoneNumber.substr(0, 3) << endl;
+    cout << "\t\t\t " << scCustomer->strCity << ", " << scCustomer->strState << " " << scCustomer->strZipcode << endl;
+    cout << "\tTelephone Number: " << scCustomer->strTelephoneNumber << endl;
     cout << "\tAccount balance: $" << scCustomer->dblAccountBalance << endl;
     cout << "\tDate of last payment: " << scCustomer->intLastPaymentMonth << "/";
     cout << scCustomer->intLastPaymentDay << "/" << scCustomer->intLastPaymentYear << endl;
+}
+
+void displayAllCustomerInfo(StructCustomer *scInfo)
+{
+    int *i = nullptr;
+    i = new int;
+    
+    for (*i = 0 ; *i < INT_CUSTOMERS ; *i += 1)
+        displayCustomerInfo(&scInfo[*i], i);
 }
